@@ -1,0 +1,40 @@
+.header-wrapper{
+    display: flex;
+    justify-content: space-between;
+   
+}
+.header-wrapper ul{
+    display: flex
+}
+.logo{
+    border-radius: 50%;
+    margin-left: 14px;
+}
+.header-wrapper ul li{
+    list-style-type: none;
+    padding: 5px;
+    margin-right: 20px;
+}
+
+.header-wrapper ul li a{
+    color: #593c3c;
+    text-decoration: none;
+}
+
+.header-wrapper ul li button{
+    background-color:blueviolet;
+    border-radius: 10%;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.footer-wrapper{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    background-color: #fff;
+}
+
