@@ -1,8 +1,81 @@
+"use client"
+import { useEffect, useState } from "react";
+import CustomerHeader from "./_components/CustomerHeader";
 
 export default function Home() {
+  const [location, setLocation] = useState([])
+  const [restaurant, setRestaurant] = useState([])
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [showLocation, setShowLocation] = useState(false)
+
+  useEffect(() => {
+    loadLocations();
+    loadRestaurants();
+  }, [])
+  const loadLocations = async () => {
+    let response = await fetch('http://localhost:3000/api/customer/locations');
+    response = await response.json();
+    if (response.success) {
+      setLocation(response.result)
+    }
+  }
+
+  const loadRestaurants = async (params) => {
+    let url="http://localhost:3000/api/customer"
+    if(params?.location){
+      url=url+"?location="+params.location
+    }
+    else if(params?.restaurant){
+      url=url+"?restaurant="+params.restaurant
+    }
+    let response = await fetch(url)
+    response = await response.json();
+    if (response.success) {
+      setRestaurant(response.result)
+    }
+  }
+  console.log(restaurant);
+
+  const handleListItem = (item) => {
+    setSelectedLocation(item)
+    setShowLocation(false)
+    loadRestaurants({location: item})
+  }
+
   return (
     <main>
-      <h1>Food Delivery App</h1>
+      <CustomerHeader />
+      <div className="main-page-banner">
+        <h1>Food Delivery App</h1>
+        <div className="input-wrapper">
+          <input type="text" value={selectedLocation} onClick={() => setShowLocation(true)} className="select-input" placeholder="Select Place" />
+          <ul className="location-list">
+            {
+              showLocation && location.map((item) => (
+                <li onClick={() => handleListItem(item)}>{item}</li>
+              ))
+            }
+          </ul>
+          <input type="text" className="search-input" onChange={(event)=>loadRestaurants({restaurant:event.target.value})} placeholder="Enter food or restaurant name" />
+        </div>
+      </div>
+      <div className="restaurant-listing-container">
+        {
+          restaurant.map((item) => (
+            <div className="restaurant-wrapper">
+              <div className="heading-wrapper">
+                <h3>{item.name}</h3>
+                <h5>Contact: {item.contact}</h5>
+              </div>
+              <div className="address-wrapper">
+                <div>{item.city} ,</div>
+                <div className="address">{item.address}, Email:{item.email}</div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
     </main>
   );
 }
