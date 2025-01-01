@@ -1,12 +1,15 @@
 "use client"
 import { useEffect, useState } from "react";
 import CustomerHeader from "./_components/CustomerHeader";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [location, setLocation] = useState([])
   const [restaurant, setRestaurant] = useState([])
   const [selectedLocation, setSelectedLocation] = useState('');
   const [showLocation, setShowLocation] = useState(false)
+
+  const router = useRouter();
 
   useEffect(() => {
     loadLocations();
@@ -21,12 +24,12 @@ export default function Home() {
   }
 
   const loadRestaurants = async (params) => {
-    let url="http://localhost:3000/api/customer"
-    if(params?.location){
-      url=url+"?location="+params.location
+    let url = "http://localhost:3000/api/customer"
+    if (params?.location) {
+      url = url + "?location=" + params.location
     }
-    else if(params?.restaurant){
-      url=url+"?restaurant="+params.restaurant
+    else if (params?.restaurant) {
+      url = url + "?restaurant=" + params.restaurant
     }
     let response = await fetch(url)
     response = await response.json();
@@ -39,7 +42,7 @@ export default function Home() {
   const handleListItem = (item) => {
     setSelectedLocation(item)
     setShowLocation(false)
-    loadRestaurants({location: item})
+    loadRestaurants({ location: item })
   }
 
   return (
@@ -56,13 +59,13 @@ export default function Home() {
               ))
             }
           </ul>
-          <input type="text" className="search-input" onChange={(event)=>loadRestaurants({restaurant:event.target.value})} placeholder="Enter food or restaurant name" />
+          <input type="text" className="search-input" onChange={(event) => loadRestaurants({ restaurant: event.target.value })} placeholder="Enter food or restaurant name" />
         </div>
       </div>
       <div className="restaurant-listing-container">
         {
           restaurant.map((item) => (
-            <div className="restaurant-wrapper">
+            <div onClick={() => router.push('explore/'+item.name+"?id="+item._id)} className="restaurant-wrapper">
               <div className="heading-wrapper">
                 <h3>{item.name}</h3>
                 <h5>Contact: {item.contact}</h5>
